@@ -29,11 +29,16 @@ Everything the stock image documents still applies; these are the additions.
 | `RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_ACCESSKEY` | — | Access key id |
 | `RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_SECRETKEY` | — | Secret access key |
 | `RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_PATHSTYLE` | `true` | Path-style addressing |
-| `RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_PATH` | `rundeck/${job.project}/${job.execid}.log` | Object key template |
 | `RUNDECK_MAIL_SMTP_HOST_DEFAULT` | `mailpit.railway.internal` | Used when the mail host reference is still empty on a first deploy |
 
 The admin line is rewritten only when the user, roles, encoding or password
 change, so extra users added to `realm.properties` by hand are preserved.
+
+The S3 object key is left to the plugin's own
+`project/${job.project}/${job.execid}` default on purpose. Rundeck expands
+`${...}` in `framework.properties` against its own framework properties before
+any plugin reads the value, so setting the key template there collapses it to a
+single constant key and every execution overwrites the last.
 
 ## Licence
 

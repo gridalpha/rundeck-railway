@@ -137,7 +137,12 @@ if [ "${RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_NAME:-}" = "org.rundeck.amazon-s3" ]
         echo "${S3_STEM}.AWSSecretKey=${RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_SECRETKEY}" >> "${S3_PARTIAL}"
     fi
     echo "${S3_STEM}.pathStyle=${RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_PATHSTYLE:-true}" >> "${S3_PARTIAL}"
-    echo "${S3_STEM}.path=${RUNDECK_PLUGIN_EXECUTIONFILESTORAGE_S3_PATH:-rundeck/\${job.project}/\${job.execid}.log}" >> "${S3_PARTIAL}"
+    # Deliberately no `.path`: Rundeck expands ${...} in framework.properties
+    # against its own framework properties before the plugin ever reads the
+    # value, so a key template naming ${job.project}/${job.execid} collapses to
+    # one constant key and every execution overwrites the last. Left unset, the
+    # plugin applies its own `project/${job.project}/${job.execid}` default and
+    # expands it itself against the execution context.
     log "wrote S3 execution-log storage partial"
 fi
 
