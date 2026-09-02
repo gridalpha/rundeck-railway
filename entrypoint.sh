@@ -156,6 +156,12 @@ case "${RUNDECK_MAIL_SMTP_HOST:-}" in
         ;;
 esac
 
+# Cluster mode is hard-coded on in the image's rundeck-config template, and a
+# node that is not named as the primary logs a warning and leaves schedule
+# ownership implicit. Single-node here, so this node is the primary.
+: "${RUNDECK_PRIMARYSERVERID:=${RUNDECK_SERVER_UUID:-a14bc3e6-75e8-4fe4-a90d-a16dcc976bf6}}"
+export RUNDECK_PRIMARYSERVERID
+
 # ---------------------------------------------------------------------------
 # Hand off
 # ---------------------------------------------------------------------------
